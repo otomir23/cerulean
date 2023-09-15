@@ -31,9 +31,9 @@ export default function AuthForm({ redirect, action, children }: {
                 return redirect && router.push(redirect)
             }
             setError(authErrors.get(res.error) || "Fallback error")
-        }}>
+        }} className="max-w-md mx-auto flex flex-col gap-2 p-2">
             {children}
-            {error}
+            {error && <p className="text-red-700">{error}</p>}
         </form>
     )
 }

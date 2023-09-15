@@ -5,6 +5,9 @@ import Link from "next/link";
 import {getProfileRedirecting} from "@/auth/session";
 import AuthForm from "@/app/auth/form";
 import {login, nextStep, register} from "@/app/auth/actions";
+import Button from "@/components/button";
+import Input from "@/components/input";
+import {PencilLineIcon} from "lucide-react";
 
 export default async function Auth({searchParams}: { searchParams: Record<string, string> }) {
     const {as: email, redirect = "/"} = searchParams
@@ -15,32 +18,24 @@ export default async function Auth({searchParams}: { searchParams: Record<string
             where: eq(users.email, email)
         })
 
-        if (user) return (
-            <AuthForm action={login} redirect={redirect}>
-                <input name="email" type="hidden" value={email} />
-                {email}
-                <Link href="/auth">change</Link>
-                <input name="password" type="password" />
-                <button type="submit">go</button>
-            </AuthForm>
-        )
-
         return (
-            <AuthForm action={register} redirect={redirect}>
-                <input name="email" type="hidden" value={email} />
-                {email}
-                <Link href="/auth">change</Link>
-                <input name="username" />
-                <input name="password" type="password" />
-                <button type="submit">go</button>
+            <AuthForm action={user ? login : register} redirect={redirect}>
+                <Input name="email" type="hidden" value={email} />
+                <div className="flex justify-between items-center mb-4">
+                    {user ? "Logging in" : "Registering"} as: {email}
+                    <Link href="/auth" className="text-blue-700">Change <PencilLineIcon size={16} className="inline" /></Link>
+                </div>
+                {!user && <Input name="username" label="Username" placeholder="user1337"/>}
+                <Input name="password" type="password" label="Password" placeholder="8 characters minimum" />
+                <Button type="submit" intent="primary">Done</Button>
             </AuthForm>
         )
     }
 
     return (
         <AuthForm action={nextStep}>
-            <input name="email" type="email" />
-            <button type="submit">go</button>
+            <Input name="email" type="email" label="Email" placeholder="damir@otomir23.me"  />
+            <Button type="submit" intent="primary">Next</Button>
         </AuthForm>
     )
 }
