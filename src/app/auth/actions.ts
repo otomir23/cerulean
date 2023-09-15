@@ -49,7 +49,9 @@ function createAction<const T extends string,>(
 }
 
 export const nextStep = createAction(["email"], async ({email}) => {
+    // Validating input
     if (!emailRegex.test(email)) error("invalid_email")
+
     return {
         success: true,
         redirect: {
@@ -59,42 +61,58 @@ export const nextStep = createAction(["email"], async ({email}) => {
 })
 
 export const login = createAction(["email", "password"], async ({email, password}) => {
+    // Validating user existence
     const user = await db.query.users.findFirst({
         where: eq(users.email, email)
     })
     if (!user) error("unknown")
+
+    // Validating password match
     if (hashPassword(password, user.passwordSalt) !== user.passwordHash) error("credentials")
+
     return { success: true }
 })
 
 export const register = createAction(["email", "password", "username"], async (
     {email, password, username}
 ) => {
+    // Validating input
     if (password.length < MIN_PASSWORD_LENGTH) error("password_too_short")
     if (!emailRegex.test(email)) error("invalid_email")
     if (!usernameRegex.test(username)) error("invalid_username")
+
+    // Validating email & username uniqueness
     if ((await db.select({}).from(users).where(eq(users.email, email))).length)
         error("unknown")
     if ((await db.select({}).from(users).where(eq(users.username, username))).length)
         error("username_taken")
+
+    // Creating password hash with generated salt
     const salt = generateSalt()
     const hash = hashPassword(password, salt)
+
+    // Adding user to the database
     const insertResult = await db.insert(users).values({
         email,
         username,
         passwordHash: hash,
         passwordSalt: salt
     }).returning({insertedId: users.id})
+
+    // Retrieving insert result
     const user = insertResult[0]
     if (!user) {
         console.error("User was not returned. " + email)
         error("unknown")
     }
+
+    // Creating session and saving its JWT to cookies
     await startSession({
         id: user.insertedId,
         email,
         username,
         avatar: null
     })
+
     return { success: true }
 })
