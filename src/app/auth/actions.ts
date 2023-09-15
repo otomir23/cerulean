@@ -70,6 +70,14 @@ export const login = createAction(["email", "password"], async ({email, password
     // Validating password match
     if (hashPassword(password, user.passwordSalt) !== user.passwordHash) error("credentials")
 
+    // Start session
+    await startSession({
+        id: user.id,
+        email,
+        username: user.username,
+        avatar: user.avatar
+    })
+
     return { success: true }
 })
 
