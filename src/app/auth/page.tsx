@@ -20,10 +20,16 @@ export default async function Auth({searchParams}: { searchParams: Record<string
 
         return (
             <AuthForm action={user ? login : register} redirect={redirect}>
-                <Input name="email" type="hidden" value={email} />
-                <div className="flex justify-between items-center mb-4">
-                    {user ? "Logging in" : "Registering"} as: {email}
-                    <Link href="/auth" className="text-blue-700">Change <PencilLineIcon size={16} className="inline" /></Link>
+                <Input name="email" type="email" className="hidden" value={email} />
+                <h1 className="text-xl font-bold">{user ? "Welcome back!" : "Nice to meet you!"}</h1>
+                <div className="flex justify-between items-center mb-4 text-sm">
+                    <p>
+                        <span className="text-neutral-700">{user ? "Logging in" : "Registering"} as:</span>{' '}
+                        <span className="font-semibold">{email}</span>
+                    </p>
+                    <Link href="/auth" className="text-blue-700 min-w-fit">
+                        Change <PencilLineIcon size={12} className="inline" />
+                    </Link>
                 </div>
                 {!user && <Input name="username" label="Username" placeholder="user1337"/>}
                 <Input name="password" type="password" label="Password" placeholder="8 characters minimum" />
