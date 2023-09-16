@@ -24,7 +24,7 @@ export const sessions = pgTable("sessions", {
     userId: serial("userId")
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
-    expires: timestamp("expires", { mode: "date" }).notNull(),
+    started: timestamp("started", { mode: "date" }).notNull(),
 });
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({

@@ -7,6 +7,7 @@ import {redirect} from "next/navigation";
 import {generateSalt} from "@/auth/secrets";
 
 export const AUTH_COOKIE_NAME = 'token'
+const MAX_SESSION_AGE = 1000 * 60 * 60 * 24 * 28 // 28 days
 
 /**
  * Retrieves the user profile information stored inside JWT cookie.
@@ -66,7 +67,7 @@ export async function refresh(refreshToken: string): Promise<JWTProfile | null> 
             owner: true
         }
     })
-    if (!session || session.expires < new Date()) return null
+    if (!session || session.started.getTime() + MAX_SESSION_AGE < Date.now()) return null
     const { id, username, email, avatar } = session.owner
     const profile = {
         refreshToken,
@@ -90,7 +91,7 @@ export async function startSession(data: Omit<JWTProfile, 'refreshToken'>): Prom
     await db.insert(sessions).values({
         sessionToken: token,
         userId: data.id,
-        expires: new Date()
+        started: new Date()
     })
     const profile: JWTProfile = {
         refreshToken: token,
