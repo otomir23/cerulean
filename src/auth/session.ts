@@ -32,7 +32,7 @@ export async function getProfile(): Promise<JWTProfile | null> {
  *
  * @returns {Promise<JWTProfile>} - A promise that resolves to the profile.
  */
-export async function getProfileOrRedirect(): Promise<JWTProfile> {
+export async function requireProfile(): Promise<JWTProfile> {
     return getProfileRedirecting('/auth', false)
 }
 
