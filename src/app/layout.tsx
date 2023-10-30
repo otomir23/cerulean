@@ -19,7 +19,7 @@ export default function RootLayout({children}: {
 }) {
     return (
         <html lang="en">
-        <body className={inter.className}>
+        <body className={`${inter.className} selection:text-blue-600 selection:bg-blue-50`}>
             <Header />
             <main className="px-12 sm:px-16">
                 {children}
