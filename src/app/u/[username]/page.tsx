@@ -3,6 +3,10 @@ import {db} from "@/db";
 import {eq} from "drizzle-orm";
 import {users} from "@/db/schema";
 import {notFound} from "next/navigation";
+import {getProfile} from "@/auth/session";
+import Button from "@/components/button";
+import {PenIcon} from "lucide-react";
+import Link from "next/link";
 
 type PageProps = { params: { username: string } }
 
@@ -24,16 +28,27 @@ export async function generateMetadata({params: {username}}: PageProps): Promise
 
 export default async function Profile({params: {username}}: PageProps) {
     const user = await getUser(username);
+    const currentUser = await getProfile();
 
     return (
         <figure className="flex gap-8 pt-8">
             <div className="w-48 aspect-square rounded-md bg-blue-600" />
-            <figcaption>
-                <h1 className="text-blue-950 font-bold text-2xl">@{user.username}</h1>
-                <p className="text-neutral-700">ID: {user.id}</p>
+            <figcaption className="flex flex-col gap-6">
+                <div>
+                    <h1 className="text-blue-950 font-bold text-2xl">@{user.username}</h1>
+                    <p className="text-neutral-700">ID: {user.id}</p>
+                </div>
 
-                <p className="mt-4 font-bold text-sm text-blue-950">Bio</p>
-                <p>Hello! This is an example biography.</p>
+                <div>
+                    <p className="font-bold text-sm text-blue-950">Bio</p>
+                    <p>Hello! This is an example biography.</p>
+                </div>
+
+                {currentUser && currentUser.username === username &&
+                    <Link href="/settings/profile">
+                        <Button intent="primary"><PenIcon size={16} /> Edit profile</Button>
+                    </Link>
+                }
             </figcaption>
         </figure>
     )
