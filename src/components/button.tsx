@@ -4,7 +4,7 @@ import {VariantProps} from "cva";
 import {LucideIcon} from "lucide-react";
 
 const buttonStyles = cva({
-    base: `flex flex-wrap items-center justify-center gap-2 rounded px-4 py-2 
+    base: `flex flex-wrap items-center justify-center gap-2 rounded px-4 py-2 select-none
     font-semibold transition-colors focus:outline-none focus:ring disabled:animate-pulse`,
     variants: {
         intent: {
