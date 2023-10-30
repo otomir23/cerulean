@@ -45,7 +45,7 @@ export default async function Profile({params: {username}}: PageProps) {
                 </div>
 
                 {currentUser && currentUser.username === username &&
-                    <Link href="/settings/profile">
+                    <Link href="/settings/profile" className="contents">
                         <Button intent="primary"><PenIcon size={16} /> Edit profile</Button>
                     </Link>
                 }
