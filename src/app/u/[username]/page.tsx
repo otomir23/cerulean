@@ -31,7 +31,7 @@ export default async function Profile({params: {username}}: PageProps) {
     const currentUser = await getProfile();
 
     return (
-        <figure className="flex gap-8 pt-8">
+        <figure className="flex gap-6 md:gap-8 pt-8 flex-col sm:flex-row">
             <div className="w-48 aspect-square rounded-md bg-blue-600" />
             <figcaption className="flex flex-col gap-6">
                 <div>
